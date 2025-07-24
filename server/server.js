@@ -1,7 +1,9 @@
 import express from "express";
 import connectDB from "./config/dbConfig.js";
-import "dotenv/config";
 import cookieParser from "cookie-parser";
+import cors from "cors";
+import userRoute from "./routes/userRoute.js";
+import "dotenv/config";
 
 // Express App
 const app = express();
@@ -14,6 +16,8 @@ app.use(cookieParser());
 app.use(cors());
 
 // Routes
+app.get("/", (req, res) => res.send("API Working!"));
+app.use("/api/v1/user", userRoute);
 
 app.listen(PORT, () => {
   connectDB();
