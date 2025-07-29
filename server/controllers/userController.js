@@ -124,3 +124,47 @@ export const logout = async (req, res) => {
     console.log(error);
   }
 };
+
+export const updateProfile = async (req, res) => {
+  try {
+    const { fullname, email, mobileNumber, address } = req.body;
+    const userId = req.id;
+
+    let user = await User.findById(userId);
+    if (!user) {
+      return res.status(400).json({
+        message: "User not found",
+        success: false,
+      });
+    }
+
+    if (fullname) user.fullname = fullname;
+    if (email) user.email = email;
+    if (mobileNumber) user.mobileNumber = mobileNumber;
+    if (address) user.address = address;
+
+    await user.save();
+
+    const updatedUser = {
+      _id: user._id,
+      fullname: user.fullname,
+      email: user.email,
+      mobileNumber: user.mobileNumber,
+      address: user.address,
+      cartCount: user.cart?.length || 0,
+      isAdmin: user.isAdmin,
+    };
+
+    return res.status(200).json({
+      message: "Profile updated successfully",
+      user: updatedUser,
+      success: true,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      message: "Server Error",
+      success: false,
+    });
+  }
+};
